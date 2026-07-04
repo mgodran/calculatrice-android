@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">L3_MGODRAN</string>
+    <string name="valider">Valider</string>
+    <string name="annuler">Annuler</string>
+    <string name="nom">Nom</string>
+    <string name="prenom">Prenom</string>
+    <string name="Bouton_Cancel" translatable="false">Cancel</string>
+    <string name="Bouton_Continue" translatable="false">Continue</string>
+    <string name="Firstname" translatable="false">Firstname</string>
+    <string name="Name" translatable="false">Name</string>
+    <string name="bonjour">Bonjour</string>
+    <string name="retour">Retour</string>
+    <string name="title_activity_activité2" translatable="false">Activité2</string>
+</resources>
