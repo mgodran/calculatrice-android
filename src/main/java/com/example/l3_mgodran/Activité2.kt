@@ -7,10 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 
 class Activité2 : AppCompatActivity() {
 
+    // Ce qui est réellement affiché à l'écran, ex : "7+8"
+    var expression = ""
+    // Le nombre en train d'être saisi (avant ou après l'opérateur), ex : "8"
+    var nombreActuel = ""
     var premierNombre = ""
-    var deuxiemeNombre = ""
     var operateur = ""
-    var nouveauNombre = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +43,9 @@ class Activité2 : AppCompatActivity() {
 
         for ((id, chiffre) in chiffres) {
             findViewById<Button>(id).setOnClickListener {
-                if (nouveauNombre) {
-                    ecran.text = chiffre
-                    nouveauNombre = false
-                } else {
-                    ecran.text = ecran.text.toString() + chiffre
-                }
+                nombreActuel += chiffre
+                expression += chiffre
+                ecran.text = expression
             }
         }
 
@@ -58,36 +57,57 @@ class Activité2 : AppCompatActivity() {
 
         for ((id, op) in operateurs) {
             findViewById<Button>(id).setOnClickListener {
-                premierNombre = ecran.text.toString()
-                operateur = op
-                nouveauNombre = true
+                if (nombreActuel.isNotEmpty()) {
+                    premierNombre = nombreActuel
+                    operateur = op
+                    expression = nombreActuel + op   // ex : "7+"
+                    ecran.text = expression
+                    nombreActuel = ""
+                }
             }
         }
 
         // Égal
         findViewById<Button>(R.id.btnEgal).setOnClickListener {
-            deuxiemeNombre = ecran.text.toString()
-            val n1 = premierNombre.toDoubleOrNull() ?: 0.0
-            val n2 = deuxiemeNombre.toDoubleOrNull() ?: 0.0
+            if (premierNombre.isNotEmpty() && operateur.isNotEmpty() && nombreActuel.isNotEmpty()) {
+                val n1 = premierNombre.toDoubleOrNull() ?: 0.0
+                val n2 = nombreActuel.toDoubleOrNull() ?: 0.0
 
-            val resultat = when (operateur) {
-                "+" -> n1 + n2
-                "-" -> n1 - n2
-                "*" -> n1 * n2
-                "/" -> if (n2 != 0.0) n1 / n2 else {
-                    ecran.text = "Erreur"
-                    return@setOnClickListener
+                val resultat = when (operateur) {
+                    "+" -> n1 + n2
+                    "-" -> n1 - n2
+                    "*" -> n1 * n2
+                    "/" -> if (n2 != 0.0) n1 / n2 else {
+                        expression = "Erreur"
+                        ecran.text = expression
+                        nombreActuel = ""
+                        premierNombre = ""
+                        operateur = ""
+                        return@setOnClickListener
+                    }
+                    else -> 0.0
                 }
-                else -> 0.0
+
+                val resultatStr = if (resultat == resultat.toLong().toDouble())
+                    resultat.toLong().toString()
+                else
+                    resultat.toString()
+
+                expression = resultatStr
+                ecran.text = expression
+                nombreActuel = resultatStr
+                premierNombre = ""
+                operateur = ""
             }
+        }
 
-            ecran.text = if (resultat == resultat.toLong().toDouble())
-                resultat.toLong().toString()
-            else
-                resultat.toString()
-
-            premierNombre = ecran.text.toString()
-            nouveauNombre = true
+        // Bouton C (effacer)
+        findViewById<Button>(R.id.btnC).setOnClickListener {
+            expression = ""
+            nombreActuel = ""
+            premierNombre = ""
+            operateur = ""
+            ecran.text = "0"
         }
     }
 }
